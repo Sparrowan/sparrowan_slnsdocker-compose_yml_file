@@ -1,0 +1,27 @@
+version: "3.2"
+services:
+  sparrowan_slns_backend:
+    build: ./sparrowan_slns_backend
+    volumes:
+      - ./sparrowan_slns_backend:/app/sparrowan_slns_backend
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    command: python3 manage.py runserver 0.0.0.0:8000
+    
+  sparrowan_slns_frontend:
+    build: ./sparrowan_slns_frontend
+    volumes:
+      - ./sparrowan_slns_frontend:/app
+      # One-way volume to use node_modules from inside image
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - sparrowan_slns_backend
+    command: npm start
